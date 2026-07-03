@@ -32,6 +32,9 @@ Produce:
 - ads.taboola: headline (native curiosity style, under ~90 chars),
   thumbnailConcept (one sentence describing the image)
 - ads.tiktok: hook (first 3 seconds spoken), scriptBeats (4 to 6 short beats)
+- ads.google: headlines (exactly 8 distinct headlines, each under ~30 chars, no two
+  reusing the same phrasing), descriptions (exactly 3 distinct descriptions, each
+  under ~90 chars)
 - advertorial: headline, subhead, sections (3 to 5, each heading + 1 to 2 short
   paragraphs, written as a native article that pre-sells without hard selling), cta
 - capture.emailOptin: headline, sub, button
@@ -50,7 +53,8 @@ Return ONLY valid JSON, no markdown, matching this shape:
   "ads": {
     "meta": { "primaryText": "", "headline": "", "description": "" },
     "taboola": { "headline": "", "thumbnailConcept": "" },
-    "tiktok": { "hook": "", "scriptBeats": [] }
+    "tiktok": { "hook": "", "scriptBeats": [] },
+    "google": { "headlines": [], "descriptions": [] }
   },
   "advertorial": {
     "headline": "", "subhead": "",
