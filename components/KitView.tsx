@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import type { Kit } from "@/lib/types";
 import CopyButton from "./CopyButton";
 import AdvertorialPreview from "./AdvertorialPreview";
+import ComplianceBadge from "./ComplianceBadge";
+import { downloadAdvertorialHtml } from "@/lib/exportAdvertorial";
 
 type Tab = "ads" | "adv" | "cap";
 
@@ -24,14 +26,22 @@ function ImgSlot({ caption, className = "" }: { caption: string; className?: str
 
 export function kitToText(kit: Kit): string {
   const { ads, advertorial, capture } = kit;
-  return [
+  const blocks = [
     `META — PRIMARY TEXT\n${ads.meta.primaryText}\n\nHEADLINE: ${ads.meta.headline}\nDESCRIPTION: ${ads.meta.description}`,
     `TABOOLA — HEADLINE\n${ads.taboola.headline}\n\nTHUMBNAIL CONCEPT: ${ads.taboola.thumbnailConcept}`,
     `TIKTOK — HOOK\n"${ads.tiktok.hook}"\n\nBEATS\n${ads.tiktok.scriptBeats.map((b, i) => `${String(i + 1).padStart(2, "0")} ${b}`).join("\n")}`,
+  ];
+  if (ads.google) {
+    blocks.push(
+      `GOOGLE — RSA\nHEADLINES\n${ads.google.headlines.join("\n")}\n\nDESCRIPTIONS\n${ads.google.descriptions.join("\n")}`
+    );
+  }
+  blocks.push(
     `ADVERTORIAL\nHEADLINE: ${advertorial.headline}\nSUBHEAD: ${advertorial.subhead}\n\n${advertorial.sections.map((s) => `${s.heading.toUpperCase()}\n${s.body}`).join("\n\n")}\n\nCTA: ${advertorial.cta}`,
     `EMAIL OPT-IN\nHEADLINE: ${capture.emailOptin.headline}\nSUB: ${capture.emailOptin.sub}\nBUTTON: ${capture.emailOptin.button}`,
-    `SMS OPT-IN\n${capture.smsOptin.message}`,
-  ].join("\n\n————————\n\n");
+    `SMS OPT-IN\n${capture.smsOptin.message}`
+  );
+  return blocks.join("\n\n————————\n\n");
 }
 
 export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand?: string }) {
@@ -71,10 +81,12 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
             <div className="mb-2.5 flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-[#1877F2]" />
               <span className={monoLabel}>Meta · Feed</span>
-              <CopyButton
-                className="ml-auto"
-                text={`${ads.meta.primaryText}\n\nHEADLINE: ${ads.meta.headline}\nDESCRIPTION: ${ads.meta.description}`}
-              />
+              <div className="ml-auto flex items-center gap-2">
+                <ComplianceBadge text={`${ads.meta.primaryText} ${ads.meta.headline} ${ads.meta.description}`} />
+                <CopyButton
+                  text={`${ads.meta.primaryText}\n\nHEADLINE: ${ads.meta.headline}\nDESCRIPTION: ${ads.meta.description}`}
+                />
+              </div>
             </div>
             <div className="overflow-hidden rounded-xl border border-line bg-white">
               <div className="flex items-center gap-2.5 px-4 py-[13px]">
@@ -117,10 +129,12 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
               <div className="mb-2.5 flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-[#004B93]" />
                 <span className={monoLabel}>Taboola · Native</span>
-                <CopyButton
-                  className="ml-auto"
-                  text={`${ads.taboola.headline}\n\nTHUMBNAIL CONCEPT: ${ads.taboola.thumbnailConcept}`}
-                />
+                <div className="ml-auto flex items-center gap-2">
+                  <ComplianceBadge text={`${ads.taboola.headline} ${ads.taboola.thumbnailConcept}`} />
+                  <CopyButton
+                    text={`${ads.taboola.headline}\n\nTHUMBNAIL CONCEPT: ${ads.taboola.thumbnailConcept}`}
+                  />
+                </div>
               </div>
               <div className="flex gap-3.5 rounded-xl border border-line bg-white p-3.5">
                 <ImgSlot caption="THUMB SLOT" className="h-24 w-[132px] flex-none rounded-lg border-[1.5px] border-dashed border-linedash !bg-[#EFEBDD]" />
@@ -143,10 +157,12 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
               <div className="mb-2.5 flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-ink shadow-[-2px_0_0_#25F4EE,2px_0_0_#FE2C55]" />
                 <span className={monoLabel}>TikTok · Script</span>
-                <CopyButton
-                  className="ml-auto"
-                  text={`"${ads.tiktok.hook}"\n\n${ads.tiktok.scriptBeats.map((b, i) => `${String(i + 1).padStart(2, "0")} ${b}`).join("\n")}`}
-                />
+                <div className="ml-auto flex items-center gap-2">
+                  <ComplianceBadge text={`${ads.tiktok.hook} ${ads.tiktok.scriptBeats.join(" ")}`} />
+                  <CopyButton
+                    text={`"${ads.tiktok.hook}"\n\n${ads.tiktok.scriptBeats.map((b, i) => `${String(i + 1).padStart(2, "0")} ${b}`).join("\n")}`}
+                  />
+                </div>
               </div>
               <div className="rounded-xl bg-[#161616] p-5 text-[#F2F2F2]">
                 <div className="mb-3 flex items-center justify-between">
@@ -178,6 +194,44 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
                 </ol>
               </div>
             </div>
+
+            {/* Google RSA (stretch) */}
+            {ads.google && (
+              <div className="animate-fadeUp" style={{ animationDelay: "260ms" }}>
+                <div className="mb-2.5 flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-[#4285F4]" />
+                  <span className={monoLabel}>Google · RSA</span>
+                  <div className="ml-auto flex items-center gap-2">
+                    <ComplianceBadge text={`${ads.google.headlines.join(" ")} ${ads.google.descriptions.join(" ")}`} />
+                    <CopyButton
+                      text={`HEADLINES\n${ads.google.headlines.join("\n")}\n\nDESCRIPTIONS\n${ads.google.descriptions.join("\n")}`}
+                    />
+                  </div>
+                </div>
+                <div className="rounded-xl border border-line bg-white p-3.5">
+                  <p className="mb-1.5 font-mono text-[9px] uppercase tracking-[.1em] text-faint">
+                    Headlines · {ads.google.headlines.length}
+                  </p>
+                  <div className="mb-3.5 flex flex-wrap gap-1.5">
+                    {ads.google.headlines.map((h, i) => (
+                      <span key={i} className="rounded-full border border-line bg-cream px-2.5 py-1 text-[11.5px] leading-tight">
+                        {h}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="mb-1.5 font-mono text-[9px] uppercase tracking-[.1em] text-faint">
+                    Descriptions · {ads.google.descriptions.length}
+                  </p>
+                  <ul className="flex flex-col gap-1.5">
+                    {ads.google.descriptions.map((d, i) => (
+                      <li key={i} className="text-[12.5px] leading-normal text-body">
+                        {d}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
           </section>
         </div>
       )}
@@ -187,10 +241,20 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
         <div className="animate-fadeUp">
           <div className="mx-auto mb-3 flex max-w-[760px] items-center gap-2">
             <span className={monoLabel}>Pre-lander · live preview</span>
-            <CopyButton
-              className="ml-auto"
-              text={`HEADLINE: ${advertorial.headline}\nSUBHEAD: ${advertorial.subhead}\n\n${advertorial.sections.map((s) => `${s.heading.toUpperCase()}\n${s.body}`).join("\n\n")}\n\nCTA: ${advertorial.cta}`}
-            />
+            <div className="ml-auto flex items-center gap-2">
+              <ComplianceBadge
+                text={`${advertorial.headline} ${advertorial.subhead} ${advertorial.sections.map((s) => s.body).join(" ")} ${advertorial.cta}`}
+              />
+              <button
+                onClick={() => downloadAdvertorialHtml(advertorial, brand)}
+                className="rounded-[7px] border border-[#D8D2BF] px-2.5 py-[5px] font-mono text-[9.5px] uppercase tracking-[.08em] text-muted transition-all hover:border-ink"
+              >
+                Export HTML
+              </button>
+              <CopyButton
+                text={`HEADLINE: ${advertorial.headline}\nSUBHEAD: ${advertorial.subhead}\n\n${advertorial.sections.map((s) => `${s.heading.toUpperCase()}\n${s.body}`).join("\n\n")}\n\nCTA: ${advertorial.cta}`}
+              />
+            </div>
           </div>
           <AdvertorialPreview advertorial={advertorial} />
         </div>
@@ -202,10 +266,12 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
           <section>
             <div className="mb-2.5 flex items-center gap-2">
               <span className={monoLabel}>✉ Email opt-in</span>
-              <CopyButton
-                className="ml-auto"
-                text={`HEADLINE: ${capture.emailOptin.headline}\nSUB: ${capture.emailOptin.sub}\nBUTTON: ${capture.emailOptin.button}`}
-              />
+              <div className="ml-auto flex items-center gap-2">
+                <ComplianceBadge text={`${capture.emailOptin.headline} ${capture.emailOptin.sub} ${capture.emailOptin.button}`} />
+                <CopyButton
+                  text={`HEADLINE: ${capture.emailOptin.headline}\nSUB: ${capture.emailOptin.sub}\nBUTTON: ${capture.emailOptin.button}`}
+                />
+              </div>
             </div>
             <div className="flex flex-col gap-2 rounded-xl border border-line bg-white px-8 py-[34px]">
               <h3 className="text-center text-[21px] font-bold tracking-[-0.02em]">{capture.emailOptin.headline}</h3>
@@ -225,7 +291,10 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
           <section>
             <div className="mb-2.5 flex items-center gap-2">
               <span className={monoLabel}>💬 SMS opt-in</span>
-              <CopyButton className="ml-auto" text={capture.smsOptin.message} />
+              <div className="ml-auto flex items-center gap-2">
+                <ComplianceBadge text={capture.smsOptin.message} />
+                <CopyButton text={capture.smsOptin.message} />
+              </div>
             </div>
             <div className="rounded-xl border border-line bg-white px-7 pb-[22px] pt-[26px]">
               <p className="mb-3.5 text-center font-mono text-[9.5px] uppercase tracking-[.1em] text-faint">
