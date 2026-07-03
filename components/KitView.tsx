@@ -121,6 +121,44 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
             <p className="mx-0.5 mt-2 font-mono text-[10px] text-faint">
               headline {ads.meta.headline.length}/40 · description {ads.meta.description.length}/30
             </p>
+
+            {/* Google RSA (stretch) */}
+            {ads.google && (
+              <div className="mt-5 animate-fadeUp" style={{ animationDelay: "260ms" }}>
+                <div className="mb-2.5 flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-[#4285F4]" />
+                  <span className={monoLabel}>Google · RSA</span>
+                  <div className="ml-auto flex items-center gap-2">
+                    <ComplianceBadge text={`${ads.google.headlines.join(" ")} ${ads.google.descriptions.join(" ")}`} />
+                    <CopyButton
+                      text={`HEADLINES\n${ads.google.headlines.join("\n")}\n\nDESCRIPTIONS\n${ads.google.descriptions.join("\n")}`}
+                    />
+                  </div>
+                </div>
+                <div className="rounded-xl border border-line bg-white p-3.5">
+                  <p className="mb-1.5 font-mono text-[9px] uppercase tracking-[.1em] text-faint">
+                    Headlines · {ads.google.headlines.length}
+                  </p>
+                  <div className="mb-3.5 flex flex-wrap gap-1.5">
+                    {ads.google.headlines.map((h, i) => (
+                      <span key={i} className="rounded-full border border-line bg-cream px-2.5 py-1 text-[11.5px] leading-tight">
+                        {h}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="mb-1.5 font-mono text-[9px] uppercase tracking-[.1em] text-faint">
+                    Descriptions · {ads.google.descriptions.length}
+                  </p>
+                  <ul className="flex flex-col gap-1.5">
+                    {ads.google.descriptions.map((d, i) => (
+                      <li key={i} className="text-[12.5px] leading-normal text-body">
+                        {d}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
           </section>
 
           <section className="flex flex-col gap-5">
@@ -194,44 +232,6 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
                 </ol>
               </div>
             </div>
-
-            {/* Google RSA (stretch) */}
-            {ads.google && (
-              <div className="animate-fadeUp" style={{ animationDelay: "260ms" }}>
-                <div className="mb-2.5 flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-[#4285F4]" />
-                  <span className={monoLabel}>Google · RSA</span>
-                  <div className="ml-auto flex items-center gap-2">
-                    <ComplianceBadge text={`${ads.google.headlines.join(" ")} ${ads.google.descriptions.join(" ")}`} />
-                    <CopyButton
-                      text={`HEADLINES\n${ads.google.headlines.join("\n")}\n\nDESCRIPTIONS\n${ads.google.descriptions.join("\n")}`}
-                    />
-                  </div>
-                </div>
-                <div className="rounded-xl border border-line bg-white p-3.5">
-                  <p className="mb-1.5 font-mono text-[9px] uppercase tracking-[.1em] text-faint">
-                    Headlines · {ads.google.headlines.length}
-                  </p>
-                  <div className="mb-3.5 flex flex-wrap gap-1.5">
-                    {ads.google.headlines.map((h, i) => (
-                      <span key={i} className="rounded-full border border-line bg-cream px-2.5 py-1 text-[11.5px] leading-tight">
-                        {h}
-                      </span>
-                    ))}
-                  </div>
-                  <p className="mb-1.5 font-mono text-[9px] uppercase tracking-[.1em] text-faint">
-                    Descriptions · {ads.google.descriptions.length}
-                  </p>
-                  <ul className="flex flex-col gap-1.5">
-                    {ads.google.descriptions.map((d, i) => (
-                      <li key={i} className="text-[12.5px] leading-normal text-body">
-                        {d}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
           </section>
         </div>
       )}
@@ -243,7 +243,7 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
             <span className={monoLabel}>Pre-lander · live preview</span>
             <div className="ml-auto flex items-center gap-2">
               <ComplianceBadge
-                text={`${advertorial.headline} ${advertorial.subhead} ${advertorial.sections.map((s) => s.body).join(" ")} ${advertorial.cta}`}
+                text={`${advertorial.headline} ${advertorial.subhead} ${advertorial.sections.map((s) => `${s.heading} ${s.body}`).join(" ")} ${advertorial.cta}`}
               />
               <button
                 onClick={() => downloadAdvertorialHtml(advertorial, brand)}

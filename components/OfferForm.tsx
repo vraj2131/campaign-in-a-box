@@ -8,6 +8,7 @@ const PLATFORMS: { id: OfferInput["primaryPlatform"]; label: string; dot: string
   { id: "meta", label: "Meta", dot: "#1877F2" },
   { id: "taboola", label: "Taboola", dot: "#004B93" },
   { id: "tiktok", label: "TikTok", dot: "#17150F" },
+  { id: "google", label: "Google", dot: "#4285F4" },
 ];
 
 export default function OfferForm({
@@ -119,7 +120,7 @@ export default function OfferForm({
 
         <div className="mt-[18px]">
           <label className={label}>Primary platform</label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {PLATFORMS.map((p) => (
               <button
                 key={p.id}
