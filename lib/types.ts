@@ -36,5 +36,5 @@ export type OfferInput = {
   description: string; // pasted or extracted from URL
   vertical: string;
   audience: string;
-  primaryPlatform: "meta" | "taboola" | "tiktok";
+  primaryPlatform: "meta" | "taboola" | "tiktok" | "google";
 };
