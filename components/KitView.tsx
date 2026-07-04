@@ -1,10 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { Kit } from "@/lib/types";
+import type { Kit, RegenTarget } from "@/lib/types";
 import CopyButton from "./CopyButton";
 import AdvertorialPreview from "./AdvertorialPreview";
 import ComplianceBadge from "./ComplianceBadge";
+import RegenerateButton from "./RegenerateButton";
 import { downloadAdvertorialHtml } from "@/lib/exportAdvertorial";
 
 type Tab = "ads" | "adv" | "cap";
@@ -44,7 +45,17 @@ export function kitToText(kit: Kit): string {
   return blocks.join("\n\n————————\n\n");
 }
 
-export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand?: string }) {
+export default function KitView({
+  kit,
+  brand = "Your brand",
+  onRegenerate,
+  regenerating = {},
+}: {
+  kit: Kit;
+  brand?: string;
+  onRegenerate?: (target: RegenTarget) => void;
+  regenerating?: Partial<Record<RegenTarget, boolean>>;
+}) {
   const [tab, setTab] = useState<Tab>("ads");
   const { ads, advertorial, capture } = kit;
   const allText = useMemo(() => kitToText(kit), [kit]);
@@ -83,6 +94,9 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
               <span className={monoLabel}>Meta · Feed</span>
               <div className="ml-auto flex items-center gap-2">
                 <ComplianceBadge text={`${ads.meta.primaryText} ${ads.meta.headline} ${ads.meta.description}`} />
+                {onRegenerate && (
+                  <RegenerateButton onClick={() => onRegenerate("meta")} loading={regenerating.meta} />
+                )}
                 <CopyButton
                   text={`${ads.meta.primaryText}\n\nHEADLINE: ${ads.meta.headline}\nDESCRIPTION: ${ads.meta.description}`}
                 />
@@ -130,6 +144,9 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
                   <span className={monoLabel}>Google · RSA</span>
                   <div className="ml-auto flex items-center gap-2">
                     <ComplianceBadge text={`${ads.google.headlines.join(" ")} ${ads.google.descriptions.join(" ")}`} />
+                    {onRegenerate && (
+                      <RegenerateButton onClick={() => onRegenerate("google")} loading={regenerating.google} />
+                    )}
                     <CopyButton
                       text={`HEADLINES\n${ads.google.headlines.join("\n")}\n\nDESCRIPTIONS\n${ads.google.descriptions.join("\n")}`}
                     />
@@ -169,6 +186,9 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
                 <span className={monoLabel}>Taboola · Native</span>
                 <div className="ml-auto flex items-center gap-2">
                   <ComplianceBadge text={`${ads.taboola.headline} ${ads.taboola.thumbnailConcept}`} />
+                  {onRegenerate && (
+                    <RegenerateButton onClick={() => onRegenerate("taboola")} loading={regenerating.taboola} />
+                  )}
                   <CopyButton
                     text={`${ads.taboola.headline}\n\nTHUMBNAIL CONCEPT: ${ads.taboola.thumbnailConcept}`}
                   />
@@ -197,6 +217,9 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
                 <span className={monoLabel}>TikTok · Script</span>
                 <div className="ml-auto flex items-center gap-2">
                   <ComplianceBadge text={`${ads.tiktok.hook} ${ads.tiktok.scriptBeats.join(" ")}`} />
+                  {onRegenerate && (
+                    <RegenerateButton onClick={() => onRegenerate("tiktok")} loading={regenerating.tiktok} />
+                  )}
                   <CopyButton
                     text={`"${ads.tiktok.hook}"\n\n${ads.tiktok.scriptBeats.map((b, i) => `${String(i + 1).padStart(2, "0")} ${b}`).join("\n")}`}
                   />
@@ -245,6 +268,9 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
               <ComplianceBadge
                 text={`${advertorial.headline} ${advertorial.subhead} ${advertorial.sections.map((s) => `${s.heading} ${s.body}`).join(" ")} ${advertorial.cta}`}
               />
+              {onRegenerate && (
+                <RegenerateButton onClick={() => onRegenerate("advertorial")} loading={regenerating.advertorial} />
+              )}
               <button
                 onClick={() => downloadAdvertorialHtml(advertorial, brand)}
                 className="rounded-[7px] border border-[#D8D2BF] px-2.5 py-[5px] font-mono text-[9.5px] uppercase tracking-[.08em] text-muted transition-all hover:border-ink"
@@ -268,6 +294,9 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
               <span className={monoLabel}>✉ Email opt-in</span>
               <div className="ml-auto flex items-center gap-2">
                 <ComplianceBadge text={`${capture.emailOptin.headline} ${capture.emailOptin.sub} ${capture.emailOptin.button}`} />
+                {onRegenerate && (
+                  <RegenerateButton onClick={() => onRegenerate("emailOptin")} loading={regenerating.emailOptin} />
+                )}
                 <CopyButton
                   text={`HEADLINE: ${capture.emailOptin.headline}\nSUB: ${capture.emailOptin.sub}\nBUTTON: ${capture.emailOptin.button}`}
                 />
@@ -293,6 +322,9 @@ export default function KitView({ kit, brand = "Your brand" }: { kit: Kit; brand
               <span className={monoLabel}>💬 SMS opt-in</span>
               <div className="ml-auto flex items-center gap-2">
                 <ComplianceBadge text={capture.smsOptin.message} />
+                {onRegenerate && (
+                  <RegenerateButton onClick={() => onRegenerate("smsOptin")} loading={regenerating.smsOptin} />
+                )}
                 <CopyButton text={capture.smsOptin.message} />
               </div>
             </div>

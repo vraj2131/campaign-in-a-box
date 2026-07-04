@@ -21,11 +21,17 @@ export default function AngleCard({
   selected,
   onSelect,
   index,
+  compareChecked = false,
+  onToggleCompare,
+  compareDisabled = false,
 }: {
   angle: Angle;
   selected: boolean;
   onSelect: () => void;
   index: number;
+  compareChecked?: boolean;
+  onToggleCompare?: () => void;
+  compareDisabled?: boolean;
 }) {
   const [pillBg, pillFg] = tint(angle.driver);
   return (
@@ -66,6 +72,24 @@ export default function AngleCard({
       <p className="mt-[13px] text-[16.5px] font-medium leading-[1.42] tracking-[-0.01em] [text-wrap:pretty]">
         &ldquo;{angle.hook}&rdquo;
       </p>
+      {onToggleCompare && (
+        <div className="mt-3 flex justify-end">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleCompare();
+            }}
+            disabled={!compareChecked && compareDisabled}
+            className={`rounded-full border px-2.5 py-1 font-mono text-[9px] uppercase tracking-[.08em] transition-all disabled:cursor-not-allowed disabled:opacity-40 ${
+              compareChecked
+                ? "border-ink bg-ink text-paper"
+                : "border-linedash bg-transparent text-faint hover:border-ink hover:text-ink"
+            }`}
+          >
+            {compareChecked ? "✓ Comparing" : "+ Compare"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

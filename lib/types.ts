@@ -38,3 +38,6 @@ export type OfferInput = {
   audience: string;
   primaryPlatform: "meta" | "taboola" | "tiktok" | "google";
 };
+
+// One regeneratable piece of a Kit — used by POST /api/kit/regenerate.
+export type RegenTarget = "meta" | "taboola" | "tiktok" | "google" | "advertorial" | "emailOptin" | "smsOptin";
