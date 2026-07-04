@@ -52,6 +52,11 @@ export default function Home() {
   const [kitStep, setKitStep] = useState(0);
   const errorFrom = useRef<"angles" | "kit" | "compare">("angles");
   const timers = useRef<ReturnType<typeof setInterval>[]>([]);
+  // Bumped each time a brand-new kit / comparison is fetched (not on individual
+  // regenerates), so an in-flight regenerate response from a superseded kit is
+  // discarded instead of patching whatever kit happens to be current when it lands.
+  const kitSession = useRef(0);
+  const compareSession = useRef(0);
 
   // Keys in `regenerating` are "target" for the single kit view, or "0-target" /
   // "1-target" for the two kits in the comparison view.
@@ -107,6 +112,7 @@ export default function Home() {
       clearTimers();
       setAngles(data.angles.slice(0, 5));
       setSelected(null);
+      setCompareSelected([]);
       setPhase("angles");
     } catch {
       fail("angles", false);
@@ -131,6 +137,7 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) return fail("kit", res.status === 429);
       clearTimers();
+      kitSession.current += 1;
       setKit(data as Kit);
       setPhase("kit");
     } catch {
@@ -168,6 +175,7 @@ export default function Home() {
       if (!ra.ok || !rb.ok) return fail("compare", ra.status === 429 || rb.status === 429);
       const [kitA, kitB] = await Promise.all([ra.json(), rb.json()]);
       clearTimers();
+      compareSession.current += 1;
       setCompareKits([kitA as Kit, kitB as Kit]);
       setPhase("compare");
     } catch {
@@ -179,6 +187,7 @@ export default function Home() {
     const activeKit = which == null ? kit : compareKits?.[which];
     if (!activeKit || !offer) return;
     const key = which == null ? target : `${which}-${target}`;
+    const sessionAtRequest = which == null ? kitSession.current : compareSession.current;
     setRegenerating((r) => ({ ...r, [key]: true }));
     try {
       const res = await fetch("/api/kit/regenerate", {
@@ -188,6 +197,8 @@ export default function Home() {
       });
       const json = await res.json();
       if (!res.ok) return; // small inline action — fail silently, spinner just stops
+      const currentSession = which == null ? kitSession.current : compareSession.current;
+      if (currentSession !== sessionAtRequest) return; // superseded by a newer kit/comparison — discard
       const patch = (k: Kit): Kit => {
         if (target === "emailOptin") return { ...k, capture: { ...k.capture, emailOptin: json.data } };
         if (target === "smsOptin") return { ...k, capture: { ...k.capture, smsOptin: json.data } };
