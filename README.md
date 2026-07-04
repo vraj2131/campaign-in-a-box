@@ -12,11 +12,9 @@ It turns a single offer into a full campaign starting point. You paste an offer 
 
 ## Why did you build THIS one?
 
-Your business runs on buying media at scale and turning that traffic into email and SMS lists, and conversion rate optimization and funnel development are two of the four services you lead with. For a lean team, the slow part of that loop is not buying the traffic — it is producing enough distinct creative and matching pre-landers to actually test, fast enough to keep up. I built the tool that compresses that first mile. It takes the blank page problem out of launching a new offer and hands a media buyer a full, angle-consistent kit in one pass, including the opt-in copy that builds the list the business depends on.
+I built this one because the business runs on buying media at scale and turning that traffic into email and SMS lists, and conversion rate optimization and funnel development are two of the four services the company leads with. For a lean team, the slow part is never buying the traffic, it is producing enough distinct creative and matching pre landers fast enough to actually test them. So I built the piece that removes the blank page problem, you give it one offer and it hands you a full, angle consistent kit in one pass, ad copy, a pre lander, and the opt in copy that builds the list the business actually depends on.
 
-I picked this over another landing page generator on purpose. You already build pages, so the leverage is not one more generator. It is collapsing the whole angle-to-creative-to-capture step into one flow so the team spends its time optimizing winners instead of drafting everything from scratch. I picked this specific problem because the angle is the actual bottleneck in media buying, not the landing page — most tools already generate pages, almost none generate the strategic reasoning (the angle) that everything downstream depends on being consistent with.
-
-*(This paragraph is a first draft in your voice based on the brief — read it over and adjust anything that doesn't sound like you before this goes in front of judges.)*
+I picked this over building another landing page generator on purpose, since the company already builds pages. The real leverage is not one more generator but collapsing the whole path from angle to creative to capture into a single flow, so the team spends its time testing and optimizing winners instead of drafting everything from scratch by hand. The angle is the actual bottleneck in media buying, not the landing page, since most tools already generate pages and almost none generate the strategic reasoning that everything downstream needs to stay consistent with.
 
 ## What would you build next if this were your full time job?
 
