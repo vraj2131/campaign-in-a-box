@@ -8,7 +8,7 @@ Built for the It's Today Media Marketing Development Engineer build challenge.
 
 ## What does this tool do?
 
-It turns a single offer into a full campaign starting point. You paste an offer and an audience, it generates five distinct marketing angles, you pick one, and it produces a complete kit built around that angle: ad copy for Meta, Taboola native, and TikTok, a native advertorial pre-lander with a live preview, and the email and SMS opt-in copy that feeds the list. One input, a ready first draft of a whole campaign.
+Campaign in a Box takes a single product offer and turns it into a full marketing campaign in a few clicks. You paste in a description of the offer along with the vertical, target audience, and platform, and the tool generates five distinct marketing angles, each built around a different emotional driver like curiosity, convenience, or fear of missing out. You pick the one that fits best, or compare two side by side, and the tool then builds out a complete kit around it, including ad copy for Meta, Taboola, TikTok, and Google, a full native advertorial article you can preview live or export as an HTML file, and email and SMS opt in copy to capture leads. Every piece can be copied individually or all at once, and if something does not sound quite right you can regenerate just that one piece without starting over, so what would normally take hours of writing and testing becomes a single guided flow from idea to a ready to launch campaign.
 
 ## Why did you build THIS one?
 
@@ -18,10 +18,7 @@ I picked this over building another landing page generator on purpose, since the
 
 ## What would you build next if this were your full time job?
 
-- Close the loop with performance data. Pull results back in, CSV first and MCP connectors to the ad platforms later, so the tool learns which angles win and biases future generation toward them.
-- One-click deploy the advertorial as a live pre-lander with a real URL and built-in variant testing, so a buyer goes from offer to live testable funnel in minutes.
-- A deeper compliance pass. The current heuristic flag scan is a first step (client-side, keyword/pattern based); the real version would be model-assisted and platform-specific so nothing generated risks getting an ad account flagged.
-- Persisted, shareable campaign kits so the team can collaborate and reuse what works.
+If this became my full time job, the first thing I would build is a way to close the loop with real performance data, starting with a simple CSV upload and later connecting directly to the ad platforms, so the tool learns which angles actually win and starts favoring that kind of thinking in future campaigns instead of guessing blind every time. Right after that I would take the advertorial pre lander and make it one click deployable as a real live page with its own URL, with variant testing built in, so a media buyer goes from a raw offer to a live testable funnel in minutes instead of handing it off to someone else to build. I would also take the compliance flag scan much further, since right now it is a simple keyword pattern check, and turn it into a proper model assisted, platform aware pass so nothing generated puts an ad account at risk. And last, I would add real persistence so campaign kits can be saved, shared, and reused across a team, since right now everything only lives in the browser for one session, and a lean team should be able to build on what already worked instead of starting over every time.
 
 ## How to use it
 
